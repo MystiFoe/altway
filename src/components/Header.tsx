@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { navLinks } from "@/content/site";
+import { navLinks, routes } from "@/content/site";
 
-import { CloseIcon, MenuIcon } from "./icons";
-import { Logo } from "./Logo";
+import { Brand } from "./Logo";
+
+const trim = (path: string) => path.replace(/\/+$/, "") || "/";
 
 export function Header() {
+  const pathname = trim(usePathname() ?? "/");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,6 +22,11 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close the mobile menu after navigating.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
@@ -27,39 +36,39 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const close = () => setOpen(false);
-
   return (
-    <header className="site-header" data-scrolled={scrolled}>
-      <div className="container site-header__inner">
-        <a href="#top" aria-label="Alt Way Academy, back to top" onClick={close}>
-          <Logo />
-        </a>
+    <header className="site-header" data-scrolled={scrolled || open}>
+      <div className="wrap site-header__bar">
+        <Brand />
 
         <button
           type="button"
-          className="nav-toggle"
+          className="menu-button"
           aria-expanded={open}
-          aria-controls="primary-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-controls="site-nav"
           onClick={() => setOpen((value) => !value)}
         >
-          {open ? <CloseIcon /> : <MenuIcon />}
+          <span className="menu-button__icon" aria-hidden="true" />
+          {open ? "Close" : "Menu"}
         </button>
 
-        <nav id="primary-nav" className="nav" data-open={open} aria-label="Primary">
+        <nav id="site-nav" className="nav" data-open={open} aria-label="Main">
           <ul className="nav__list">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a className="nav__link" href={link.href} onClick={close}>
+                <Link
+                  href={link.href}
+                  className="nav__link"
+                  aria-current={trim(link.href) === pathname ? "page" : undefined}
+                >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a className="btn btn--primary" href="#book" onClick={close}>
+          <Link href={routes.book} className="btn btn-primary" aria-current={pathname === trim(routes.book) ? "page" : undefined}>
             Book a session
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

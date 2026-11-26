@@ -1,6 +1,6 @@
 /**
  * Single source of truth for all site copy, pricing and contact details.
- * Edit this file to change what the website says; components only render it.
+ * Components only render this data, so routine edits happen here.
  */
 
 export interface NavLink {
@@ -9,16 +9,16 @@ export interface NavLink {
 }
 
 export interface Audience {
-  title: string;
   who: string;
-  need: string;
+  detail: string;
+  workOn: string;
 }
 
 export interface MethodStage {
   letter: string;
   name: string;
-  summary: string;
-  activities: string[];
+  whatHappens: string;
+  youLeaveWith: string;
 }
 
 export interface Programme {
@@ -26,7 +26,8 @@ export interface Programme {
   price: string;
   description: string;
   includes: string[];
-  highlight?: "Flagship" | "Best value";
+  /** Short plain-language note shown on the recommended option only. */
+  note?: string;
 }
 
 export interface ProgrammeGroup {
@@ -36,15 +37,10 @@ export interface ProgrammeGroup {
   programmes: Programme[];
 }
 
-export interface StandaloneService {
+export interface PricedItem {
   name: string;
   price: string;
-}
-
-export interface InstitutionService {
-  name: string;
-  detail: string;
-  price: string;
+  detail?: string;
 }
 
 export interface Faq {
@@ -56,52 +52,88 @@ export const contact = {
   phoneDisplay: "+91 73494 21600",
   phoneE164: "+917349421600",
   whatsappNumber: "917349421600",
-  city: "Bengaluru, Karnataka",
-  hours: "Monday to Saturday, 10:00 to 19:00 IST",
+  city: "Bengaluru",
+  hours: "Monday to Saturday, 10am to 7pm",
 } as const;
 
 export const brand = {
   name: "Alt Way Academy",
   tagline: "Take the alternate way.",
-  services: ["Career Counselling", "CV and Interview Readiness", "Upskilling"],
   description:
-    "Alt Way Academy helps students and early-career professionals find the skills they already have, choose a career path that fits them, and get ready to be hired through a strong CV, mock interviews and targeted upskilling.",
+    "Career counselling, CV and interview preparation, and upskilling plans for students and early-career professionals. Run by Kenith Anthony from Bengaluru, online across India.",
+} as const;
+
+export const routes = {
+  home: "/",
+  method: "/how-it-works/",
+  programmes: "/programmes/",
+  about: "/about/",
+  colleges: "/colleges/",
+  faq: "/faq/",
+  book: "/book/",
 } as const;
 
 export const navLinks: NavLink[] = [
-  { label: "Approach", href: "#approach" },
-  { label: "Programmes", href: "#programmes" },
-  { label: "Mentor", href: "#mentor" },
-  { label: "For Colleges", href: "#colleges" },
-  { label: "FAQ", href: "#faq" },
+  { label: "How it works", href: routes.method },
+  { label: "Prices", href: routes.programmes },
+  { label: "About Kenith", href: routes.about },
+  { label: "For colleges", href: routes.colleges },
+  { label: "Questions", href: routes.faq },
 ];
 
-export const heroPoints: string[] = [
-  "One-to-one sessions, online or in person",
-  "A written roadmap after every plan",
-  "English, Hindi, Kannada and Tamil",
-];
+/** Book page URL with an optional preselected session. */
+export function bookingHref(interest?: string): string {
+  return interest ? `${routes.book}?interest=${encodeURIComponent(interest)}` : routes.book;
+}
+
+export const hero = {
+  title: "Career advice from someone who reads CVs for a living.",
+  lead: "Kenith Anthony works in talent acquisition and sees every week why good candidates get rejected. Alt Way Academy is where he helps you avoid that: choosing a direction, fixing your CV, and practising interviews until they stop feeling like a test.",
+  primaryCta: "Book a ₹499 first session",
+  secondaryCta: "See all prices",
+  facts: ["Sessions online or in Bengaluru", "English, Hindi, Kannada and Tamil"],
+};
+
+/** Lines shown on the sample CV in the hero, with the reviewer's notes. */
+export const sampleCv = {
+  name: "Ananya R.",
+  target: "Applying for: Business Analyst",
+  lines: [
+    { id: "summary", text: "Hardworking and passionate team player seeking a challenging role." },
+    { id: "role", text: "Marketing Intern, Bloom Foods, Bengaluru (Jun to Dec 2025)" },
+    { id: "duty", text: "Responsible for handling social media and reports." },
+    { id: "result", text: "Built a weekly sales dashboard in Excel used by 3 regional managers." },
+    { id: "edu", text: "B.Com, Christ University, 2025. CGPA 7.8" },
+    { id: "skills", text: "Skills: MS Office, communication, SQL (basic), Power BI" },
+  ],
+  notes: {
+    summary: "Says nothing. Cut it.",
+    duty: "What changed because of you?",
+    result: "Good. Lead with this.",
+    skills: "Move up, under your name",
+  },
+} as const;
 
 export const audiences: Audience[] = [
   {
-    title: "Final-year students and recent graduates",
-    who: "Age 20 to 26",
-    need: "Clarity on direction, a CV that gets shortlisted, interview practice and a plan for the first job.",
+    who: "In Class 10 to 12",
+    detail: "Usually with a parent in the session",
+    workOn: "Which stream and course suit you, based on an assessment and a proper conversation rather than what everyone else is doing.",
   },
   {
-    title: "School and pre-university students",
-    who: "Class 10 to 12, with parents",
-    need: "Choosing a stream and a course based on strengths and interests rather than guesswork or pressure.",
+    who: "In final year or just graduated",
+    detail: "Most of the people we work with",
+    workOn: "Picking target roles, a CV that gets shortlisted, LinkedIn, mock interviews and a plan for the first three months of applying.",
   },
   {
-    title: "Early-career professionals",
-    who: "1 to 5 years of experience",
-    need: "Switching roles or industries, closing skill gaps and preparing for the next set of interviews.",
+    who: "One to five years into work",
+    detail: "Changing role, team or industry",
+    workOn: "Where your experience fits next, which skills to close first, and how to explain the move in an interview.",
   },
   {
-    title: "Colleges and institutes",
-    who: "Placement cells and departments",
-    need: "Affordable workshops and employability programmes that prepare whole batches for placements.",
+    who: "Running a placement cell",
+    detail: "Colleges and training institutes",
+    workOn: "Workshops, assessment camps and four-week programmes that get a whole batch ready before recruiters visit.",
   },
 ];
 
@@ -109,32 +141,23 @@ export const method: MethodStage[] = [
   {
     letter: "A",
     name: "Assess",
-    summary: "Find the starting point.",
-    activities: [
-      "Profile, interests and skills assessment",
-      "One-to-one counselling session",
-      "Clear view of strengths and gaps",
-    ],
+    whatHappens:
+      "A short assessment of your interests and strengths, then a one-to-one call where we talk through the results and what you actually want.",
+    youLeaveWith: "A clear list of roles worth aiming for, and the ones to drop.",
   },
   {
     letter: "L",
     name: "Level up",
-    summary: "Close the gaps.",
-    activities: [
-      "Written career roadmap",
-      "CV and LinkedIn rebuilt for your target roles",
-      "Skills plan with practice tasks and course options",
-    ],
+    whatHappens:
+      "Your CV and LinkedIn are marked up line by line and rewritten with you. Skill gaps get a short plan with free and paid course options.",
+    youLeaveWith: "A rewritten CV and a written roadmap you can follow on your own.",
   },
   {
     letter: "T",
     name: "Take off",
-    summary: "Get hired.",
-    activities: [
-      "Mock interviews with written feedback",
-      "Job-search strategy and application plan",
-      "Follow-up check-ins as you apply",
-    ],
+    whatHappens:
+      "Mock interviews run the way real ones are, followed by written feedback. Then a plan for where and how to apply, with check-ins as you go.",
+    youLeaveWith: "Interview practice that counts, and someone to check in with.",
   },
 ];
 
@@ -142,189 +165,207 @@ export const programmeGroups: ProgrammeGroup[] = [
   {
     id: "students",
     label: "Students and graduates",
-    intro: "Start small with a single session or choose a complete package from assessment to interviews.",
+    intro: "Start with one session if you are unsure. Each package includes everything in the one above it.",
     programmes: [
       {
-        name: "Alt Discovery",
+        name: "Discovery session",
         price: "₹499",
-        description: "A first conversation to understand where you are.",
-        includes: ["30-minute introductory counselling session", "Suggested next steps"],
+        description: "30 minutes to talk through where you are and what would help.",
+        includes: ["One video call", "Suggested next steps"],
       },
       {
-        name: "Alt Assess",
+        name: "Assessment",
         price: "₹999",
-        description: "Understand your strengths before you decide.",
-        includes: ["Career assessment", "Counselling session to discuss results"],
+        description: "Find out what you are good at before deciding anything.",
+        includes: ["Career assessment", "Call to go through the results"],
       },
       {
-        name: "Alt Career Plan",
+        name: "Career plan",
         price: "₹1,999",
-        description: "Our core programme for a clear, written direction.",
-        includes: ["Career assessment", "60-minute one-to-one session", "Written report and career roadmap"],
-        highlight: "Flagship",
+        description: "The full assessment and a written roadmap to follow.",
+        includes: ["Career assessment", "60-minute one-to-one call", "Written report and roadmap"],
+        note: "Most people start here",
       },
       {
-        name: "Alt Graduate Ready",
+        name: "Graduate ready",
         price: "₹3,999",
-        description: "Everything you need to start applying with confidence.",
-        includes: [
-          "Alt Career Plan",
-          "CV build and LinkedIn guidance",
-          "Two mock interviews",
-          "Written weakness report",
-        ],
-        highlight: "Best value",
+        description: "Career plan, plus everything you need to start applying.",
+        includes: ["Career plan", "CV rewrite and LinkedIn review", "Two mock interviews", "Written feedback on weak spots"],
       },
       {
-        name: "Alt Full Journey",
+        name: "Full journey",
         price: "₹5,999",
-        description: "Guided support from first session to first offer.",
-        includes: ["Alt Graduate Ready", "Skills roadmap", "Monthly follow-ups for three months"],
+        description: "Graduate ready, plus support while you apply.",
+        includes: ["Graduate ready", "Skills roadmap", "Monthly check-ins for three months"],
       },
     ],
   },
   {
     id: "professionals",
     label: "Working professionals",
-    intro: "Focused support for a promotion, a role change or a move into a new industry.",
+    intro: "For a promotion, a new role or a move into a different industry.",
     programmes: [
       {
-        name: "Career Upgrade",
+        name: "Career upgrade",
         price: "₹1,999",
-        description: "Sharpen your profile for the next step up.",
-        includes: ["CV and LinkedIn refresh", "Skill-gap analysis", "Interview preparation"],
+        description: "Get your profile ready for the next step up.",
+        includes: ["CV and LinkedIn refresh", "Skill-gap review", "Interview preparation"],
       },
       {
-        name: "Career Transition",
+        name: "Career change",
         price: "₹3,999",
-        description: "A structured plan to move into a new role.",
-        includes: ["Target-role plan", "Skills roadmap", "CV and interview strategy", "Follow-up sessions"],
-        highlight: "Best value",
+        description: "A plan for moving into a different role or industry.",
+        includes: ["Target-role plan", "Skills roadmap", "CV and interview strategy", "Follow-up calls"],
+        note: "Most people start here",
       },
       {
-        name: "Career Mentoring",
+        name: "Mentoring",
         price: "₹5,999 to ₹7,999",
-        description: "Ongoing guidance while you make the change.",
-        includes: ["Three months of structured mentoring", "Regular progress reviews"],
+        description: "Regular guidance while you make the move.",
+        includes: ["Three months of planned sessions", "Progress reviews"],
       },
     ],
   },
 ];
 
-export const standaloneServices: StandaloneService[] = [
-  { name: "CV review", price: "₹499" },
-  { name: "CV rewriting", price: "₹999" },
-  { name: "ATS-friendly CV build", price: "₹1,499" },
-  { name: "LinkedIn optimisation", price: "₹999" },
-  { name: "Mock interview (single)", price: "₹799" },
-  { name: "Mock interviews (set of three)", price: "₹1,999" },
-];
+export interface TimelineStep {
+  when: string;
+  title: string;
+  detail: string;
+}
 
-export const institutionServices: InstitutionService[] = [
+/** A typical Graduate ready programme, shown on the How it works page. */
+export const timeline: TimelineStep[] = [
   {
-    name: "Career awareness workshop",
-    detail: "A half-day or full-day session on career options, hiring trends and planning.",
-    price: "From ₹5,000",
+    when: "Day 1",
+    title: "Assessment",
+    detail: "You get a link to a 30 to 40 minute assessment you can take from your phone or laptop.",
   },
   {
-    name: "Student assessment camp",
-    detail: "Career assessments for a batch, with individual summaries for each student.",
-    price: "From ₹199 per student",
+    when: "Within 3 days",
+    title: "One-to-one call",
+    detail: "An hour on Google Meet going through your results, your interests and the roles worth aiming for.",
+  },
+  {
+    when: "End of week 1",
+    title: "Written roadmap",
+    detail: "A short document with your target roles, the skills to work on first and where to learn them.",
+  },
+  {
+    when: "Week 2",
+    title: "CV and LinkedIn",
+    detail: "Your CV comes back marked up, then we rewrite it together. LinkedIn gets the same treatment.",
+  },
+  {
+    when: "Weeks 3 and 4",
+    title: "Two mock interviews",
+    detail: "Run like real ones for your target role, each followed by written notes on what to fix.",
+  },
+];
+
+export const standaloneServices: PricedItem[] = [
+  { name: "CV review with written notes", price: "₹499" },
+  { name: "CV rewrite", price: "₹999" },
+  { name: "CV built from scratch for online applications", price: "₹1,499" },
+  { name: "LinkedIn profile review", price: "₹999" },
+  { name: "One mock interview", price: "₹799" },
+  { name: "Three mock interviews", price: "₹1,999" },
+];
+
+export const institutionServices: PricedItem[] = [
+  {
+    name: "Career awareness workshop",
+    detail: "Half a day or a full day on options, hiring and planning.",
+    price: "from ₹5,000",
+  },
+  {
+    name: "Assessment camp",
+    detail: "Assessments for a whole batch, with a summary for each student.",
+    price: "from ₹199 a student",
   },
   {
     name: "Four-week employability programme",
-    detail: "CV clinics, mock interviews and skill planning delivered over four weeks.",
-    price: "From ₹25,000",
+    detail: "CV clinics, mock interviews and skill plans, one week at a time.",
+    price: "from ₹25,000",
   },
   {
-    name: "Annual college partnership",
-    detail: "Year-round placement readiness support planned with your placement cell.",
-    price: "From ₹50,000",
+    name: "Year-round partnership",
+    detail: "Placement preparation planned with your placement cell.",
+    price: "from ₹50,000",
   },
 ];
 
-export const principles: { title: string; body: string }[] = [
-  {
-    title: "The whole journey in one place",
-    body: "Self-discovery, CV, interviews and upskilling are handled together, so you are not passed between separate vendors.",
-  },
-  {
-    title: "Practice comes first",
-    body: "Mock interviews with written feedback show exactly what to fix before the real interview does.",
-  },
-  {
-    title: "You leave with a document",
-    body: "Every plan ends with a written roadmap you can follow, share with family and revisit later.",
-  },
-  {
-    title: "Honest advice",
-    body: "We never promise jobs, salaries or admissions, and any commission from a course provider is disclosed upfront.",
-  },
+export const collegeProcess: string[] = [
+  "A call with your placement team to agree on goals, batch size and dates.",
+  "Students take the assessment online a week before the first session.",
+  "Workshops and mock interviews run on campus or online, whichever suits the batch.",
+  "You receive a batch summary and individual notes for each student afterwards.",
+];
+
+/** Commitments phrased as limits, because that is what people want to know. */
+export const commitments: string[] = [
+  "We will not promise you a job, a salary or an admission. Nobody honestly can.",
+  "We will not push the biggest package. If a ₹499 session is all you need, that is what we will tell you.",
+  "If we ever earn a commission on a course we suggest, you will hear it from us first.",
+  "We do not offer therapy or mental health counselling. If you need that, we will point you to a qualified professional.",
 ];
 
 export const mentor = {
   name: "Kenith Anthony",
-  role: "Founder and Lead Mentor",
+  firstName: "Kenith",
   initials: "KA",
-  currentRole: "Talent Acquisition, Pravaig Dynamics",
-  bio: [
-    "Kenith works in talent acquisition at Pravaig Dynamics, a Bengaluru-based electric vehicle company. His day-to-day work involves screening CVs, running interviews and seeing first-hand why capable candidates are passed over.",
-    "He started Alt Way Academy to close that gap from the candidate's side. Students and job seekers get guidance from someone who knows how hiring decisions are actually made, from the first CV scan to the final round.",
+  role: "Founder",
+  dayJob: "Talent acquisition at Pravaig Dynamics",
+  languages: "English, Hindi, Kannada, Tamil",
+  letter: [
+    "Most of my week is spent hiring. I read CVs, run screening calls and sit in interviews, and I keep seeing the same thing: capable people rejected for reasons that have nothing to do with their ability. A vague CV. A role they picked because a friend did. An answer they had never said out loud before.",
+    "None of that is hard to fix, but most students never get to see the process from the other side of the table. I started Alt Way Academy to give them that view, at a price a student can actually pay.",
+    "Every session is with me. If I think you need something I cannot offer, I will say so.",
   ],
-  focusAreas: [
-    "Career direction for students and graduates",
-    "CV and LinkedIn reviews from a recruiter's perspective",
-    "Mock interviews and feedback",
-    "Career transitions for early professionals",
-  ],
-  mission:
-    "To help every individual recognise their potential, make an informed career decision and take a confident next step.",
 } as const;
 
 export const faqs: Faq[] = [
   {
     question: "Are sessions online or in person?",
     answer:
-      "Both. Most sessions run on Google Meet so you can join from anywhere. In-person sessions can be arranged in Bengaluru.",
+      "Mostly online on Google Meet, so you can join from anywhere in India. In-person sessions can be arranged in Bengaluru.",
   },
   {
-    question: "Which programme should I start with?",
+    question: "I don't know which one to pick.",
     answer:
-      "If you are unsure, book Alt Discovery. It is a short, low-cost session, and if you continue to a larger package we will recommend the one that fits rather than the most expensive one.",
+      "Book the ₹499 Discovery session. At the end of it you will know whether you need anything more, and if you do, which one.",
   },
   {
-    question: "Do you guarantee a job or placement?",
-    answer:
-      "No. Nobody can honestly guarantee a job. We guarantee a clear plan, a stronger CV, real interview practice and personal follow-up, which together improve your chances significantly.",
+    question: "Can my parents join?",
+    answer: "Yes. For school students we recommend it, especially when the decision is about a stream or a course.",
   },
   {
-    question: "Can parents join the session?",
-    answer:
-      "Yes. For school and pre-university students we encourage a parent to join, especially for stream and course decisions.",
-  },
-  {
-    question: "Do you offer personal or mental health counselling?",
-    answer:
-      "Not at present. Alt Way Academy focuses on career guidance and employability. Any future counselling services will be delivered only by qualified, registered professionals.",
+    question: "How quickly will I get my CV back?",
+    answer: "A marked-up review comes back within three working days. A full rewrite takes about a week, including one round of changes.",
   },
   {
     question: "How do I pay?",
     answer:
-      "Payment is taken by UPI or bank transfer when your session is confirmed. Cancellation and refund terms are shared with every booking.",
+      "By UPI or bank transfer once your session time is confirmed. You can reschedule up to 24 hours before a session at no cost.",
+  },
+  {
+    question: "Do you offer personal or mental health counselling?",
+    answer:
+      "No. Alt Way Academy covers careers and employability only. If that changes, those sessions will be run by qualified, registered professionals.",
   },
 ];
 
-export const bookingInterests: string[] = [
-  "Not sure yet, help me choose",
-  ...programmeGroups.flatMap((group) => group.programmes.map((p) => p.name)),
-  ...standaloneServices.map((s) => s.name),
-  "College or institute partnership",
-];
-
 export const bookingProfiles: string[] = [
-  "Student (Class 10 to 12)",
+  "School student (Class 10 to 12)",
   "College student or recent graduate",
   "Working professional",
   "Parent",
   "College or institute",
+];
+
+export const bookingInterests: string[] = [
+  "Not sure yet",
+  ...programmeGroups.flatMap((group) => group.programmes.map((p) => p.name)),
+  ...standaloneServices.map((s) => s.name),
+  "College or institute services",
 ];

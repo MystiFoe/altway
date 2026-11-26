@@ -1,40 +1,31 @@
-import { brand, contact, navLinks } from "@/content/site";
+import Link from "next/link";
 
-import { Logo } from "./Logo";
+import { brand, contact, navLinks, routes } from "@/content/site";
+
+import { Brand } from "./Logo";
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
     <footer className="site-footer">
-      <div className="container">
+      <div className="wrap">
         <div className="site-footer__grid">
           <div>
-            <Logo tone="light" />
+            <Brand />
             <p className="site-footer__about">{brand.description}</p>
           </div>
 
           <div>
-            <h2 className="site-footer__heading">Explore</h2>
+            <h2 className="site-footer__heading">Pages</h2>
             <ul className="site-footer__list">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="site-footer__heading">Services</h2>
-            <ul className="site-footer__list">
-              {brand.services.map((service) => (
-                <li key={service}>
-                  <a href="#programmes">{service}</a>
+                  <Link href={link.href}>{link.label}</Link>
                 </li>
               ))}
               <li>
-                <a href="#colleges">College partnerships</a>
+                <Link href={routes.book}>Book a session</Link>
               </li>
             </ul>
           </div>
@@ -47,17 +38,18 @@ export function Footer() {
               </li>
               <li>
                 <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
-                  WhatsApp
+                  Message on WhatsApp
                 </a>
               </li>
-              <li>{contact.city}</li>
+              <li>{contact.hours}</li>
+              <li>{contact.city}, and online across India</li>
             </ul>
           </div>
         </div>
 
-        <div className="site-footer__bottom">
+        <div className="site-footer__legal">
           <span>
-            &copy; {year} {brand.name}. All rights reserved.
+            &copy; {year} {brand.name}
           </span>
           <span>Career guidance only. We do not guarantee jobs, salaries or admissions.</span>
         </div>

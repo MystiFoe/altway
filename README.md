@@ -1,8 +1,22 @@
 # Alt Way Academy website
 
-Marketing website for Alt Way Academy, a career counselling and employability practice in Bengaluru founded by Kenith Anthony.
+Website for Alt Way Academy, a career counselling and employability practice in Bengaluru run by Kenith Anthony.
 
-Built with Next.js (App Router) and TypeScript, exported as a fully static site. There is no backend: the booking form validates input and opens a prefilled WhatsApp chat with the academy.
+Built with Next.js (App Router) and TypeScript as a static export. There is no backend: the booking form validates input and opens a prefilled WhatsApp message to the academy.
+
+Live: https://altway.vercel.app
+
+## Pages
+
+| Route            | Purpose                                                       |
+| ---------------- | ------------------------------------------------------------- |
+| `/`              | Home: marked-up CV hero, who it is for, the ALT stages, starting prices, Kenith |
+| `/how-it-works/` | The three stages in detail and a typical month                |
+| `/programmes/`   | Full price list for students and professionals, single services |
+| `/about/`        | A note from Kenith, facts and commitments                     |
+| `/colleges/`     | Rates and process for colleges and institutes                 |
+| `/faq/`          | Questions before booking                                      |
+| `/book/`         | Booking form. Accepts `?interest=<programme name>` to preselect |
 
 ## Getting started
 
@@ -13,67 +27,51 @@ npm install
 npm run dev        # http://localhost:3000
 ```
 
-| Command             | Purpose                                         |
-| ------------------- | ----------------------------------------------- |
-| `npm run dev`       | Local development server with hot reload        |
-| `npm run build`     | Production static export into `out/`            |
-| `npm start`         | Serve the exported `out/` folder locally        |
-| `npm test`          | Unit tests for the booking link builder         |
-| `npm run typecheck` | Strict TypeScript check                         |
+| Command             | Purpose                                  |
+| ------------------- | ---------------------------------------- |
+| `npm run dev`       | Development server                       |
+| `npm run build`     | Static export into `out/`                |
+| `npm start`         | Serve `out/` locally                     |
+| `npm test`          | Unit tests for booking validation        |
+| `npm run typecheck` | Strict TypeScript check                  |
 
-## Project structure
+## Structure
 
 ```
 src/
-  app/
-    layout.tsx        Root layout, metadata, fonts, structured data
-    page.tsx          Page composition (section order)
-    globals.css       Design tokens and all component styles
-    icon.svg          Favicon
-  components/         One component per page section, plus shared icons and logo
-  content/
-    site.ts           All copy, pricing, FAQs and contact details
-  lib/
-    whatsapp.ts       Booking validation and WhatsApp URL builder
-    whatsapp.test.ts  Unit tests (node:test)
-    events.ts         Programme card to booking form preselection
+  app/            One folder per route, plus layout, 404 and globals.css
+  components/     Header, footer and the pieces each page is built from
+  content/site.ts All copy, prices, FAQs, routes and contact details
+  lib/whatsapp.ts Booking validation, phone normalisation and the WhatsApp link
 ```
 
-## Editing content
+Routine edits (prices, programme contents, FAQs, Kenith's note, phone number) happen in `src/content/site.ts` only.
 
-Almost every change happens in `src/content/site.ts`: prices, programme contents, mentor bio, FAQs, phone number and hours. Components only render that data, so there is no need to touch JSX for routine updates.
+To add Kenith's photo, put it at `public/kenith.jpg` and set `PHOTO` to `"/kenith.jpg"` in `src/components/Portrait.tsx`.
 
-To add a mentor photo, place it at `public/mentor.jpg` and set `MENTOR_PHOTO` to `"/mentor.jpg"` in `src/components/Mentor.tsx`.
+## Design notes
 
-The figures in the trust strip (`src/components/TrustStrip.tsx`) are service facts, not outcome claims. Replace them with verified numbers such as clients served or average rating once real data exists. Testimonials should only be added with written permission from clients.
+The design is built around the documents a career mentor works with rather than a generic landing page kit.
 
-## Design system
-
-Tokens live at the top of `globals.css`:
-
-- Background `#f7f6f2`, surfaces white and `#eff2f0`
-- Primary muted teal `#2f5d6e`, sage accent `#7d9a8b`, sand accent `#b08a62`
-- Headings in Source Serif 4, body in Inter (both self-hosted via Fontsource, no external font requests)
-- 8 / 12 / 18 px radii, pill buttons, soft layered shadows
+- Palette: paper `#f5f8f7`, ink `#1b2a2c`, eucalyptus `#2e5e57` for the brand, highlighter `#f6e89c` and ballpoint blue `#2c4f9e` used only where something is being marked or recommended.
+- Type: Schibsted Grotesk for everything, Kalam (a handwriting face from the Indian Type Foundry) only for pen notes and Kenith's signature. Both are self-hosted.
+- Structure: price lists, rate cards and tables use rules because they are tabular content. There are no decorative cards, icons or badges.
+- Motion: one orchestrated moment, the reviewer's pen marking the sample CV on the home page. Everything else moves only in response to the visitor (tabs, menu, FAQ, form states). Reduced-motion settings show the final state immediately.
 
 ## Deployment
 
-The site is a static export, so it runs on any static host.
+Vercel builds the project automatically on every push to `main`. No settings are needed.
 
-GitHub Pages: the included workflow (`.github/workflows/deploy.yml`) builds and deploys on every push to `main`. Enable it once under Settings, Pages, Source: GitHub Actions. The site will be served at `https://<user>.github.io/altway/`.
+| Variable                | Default                       | Purpose                              |
+| ----------------------- | ----------------------------- | ------------------------------------ |
+| `NEXT_PUBLIC_SITE_URL`  | `https://altway.vercel.app`   | Base URL for metadata                |
+| `NEXT_PUBLIC_BASE_PATH` | empty                         | Only needed if hosted under a sub-path |
 
-Vercel or Netlify: import the repository. No configuration is needed; leave `NEXT_PUBLIC_BASE_PATH` unset.
+When a custom domain is connected, set `NEXT_PUBLIC_SITE_URL` to it in the Vercel project settings.
 
-Custom domain: point the domain at the host, then remove `NEXT_PUBLIC_BASE_PATH` from the workflow and set `NEXT_PUBLIC_SITE_URL` to the domain so canonical metadata is correct.
+## To confirm with Kenith before launch
 
-| Variable                | Default                       | Purpose                                     |
-| ----------------------- | ----------------------------- | ------------------------------------------- |
-| `NEXT_PUBLIC_BASE_PATH` | empty                         | Sub-path when hosted under a folder         |
-| `NEXT_PUBLIC_SITE_URL`  | `https://altwayacademy.in`    | Base URL for metadata and Open Graph tags   |
-
-## Before going live
-
-- Register the domain (altwayacademy.in and altwayacademy.com were unregistered at the time of writing).
-- Complete the trademark search for "Alt Way Academy" in classes 41 and 35.
-- Publish cancellation, refund and privacy terms and link them from the footer.
-- Add a real photo of Kenith and an email address once the domain is set up.
+- Turnaround times and the 24-hour reschedule policy on the FAQ and prices pages.
+- The wording of his note on the About page and the quote on the home page.
+- Whether naming Pravaig Dynamics is fine with his employer.
+- A real photo, and refund and privacy terms linked from the footer.
